@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 LED Control</title>
+</head>
+<body style="text-align:center; font-family:sans-serif;">
+
+  <h1>ESP32 LED Control 🌐</h1>
+
+  <button onclick="turnOn()" style="padding:10px 20px;">Turn ON</button>
+  <button onclick="turnOff()" style="padding:10px 20px;">Turn OFF</button>
+
+  <script>
+    function turnOn() {
+      fetch("https://your-server-url/api/led/on");
+    }
+
+    function turnOff() {
+      fetch("https://your-server-url/api/led/off");
+    }
+  </script>
+
+</body>
+</html>
