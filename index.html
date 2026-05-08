@@ -2,34 +2,93 @@
 <html>
 <head>
   <title>Smart Home Control</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f5f6fa;
+    }
+
+    table {
+      margin: auto;
+      width: 60%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0px 0px 10px #ccc;
+    }
+
+    th, td {
+      padding: 15px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background: #4f46e5;
+      color: white;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin: 2px;
+      cursor: pointer;
+    }
+
+    .on {
+      color: green;
+      font-weight: bold;
+    }
+
+    .off {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
-<body style="text-align:center;font-family:sans-serif;">
+<body>
 
-  <h1>Smart Home Dashboard</h1>
+<h1>Smart Home Dashboard</h1>
 
-  <h3 id="status">Loading...</h3>
+<table>
+  <tr>
+    <th>Device</th>
+    <th>Status</th>
+    <th>Control</th>
+  </tr>
 
-  <button onclick="setDevice('living-light','ON')">Light ON</button>
-  <button onclick="setDevice('living-light','OFF')">Light OFF</button>
+  <tr>
+    <td>Light</td>
+    <td id="lightStatus">Loading...</td>
+    <td>
+      <button onclick="setDevice('living-light','ON')">ON</button>
+      <button onclick="setDevice('living-light','OFF')">OFF</button>
+    </td>
+  </tr>
 
-  <br><br>
+  <tr>
+    <td>Fan</td>
+    <td id="fanStatus">Loading...</td>
+    <td>
+      <button onclick="setDevice('living-fan','ON')">ON</button>
+      <button onclick="setDevice('living-fan','OFF')">OFF</button>
+    </td>
+  </tr>
 
-  <button onclick="setDevice('living-fan','ON')">Fan ON</button>
-  <button onclick="setDevice('living-fan','OFF')">Fan OFF</button>
+</table>
 
-  <script type="module">
+<script type="module">
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      set,
-      onValue
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // 🔥 FIREBASE CONFIG (PUT YOUR VALUES)
-    // PASTE YOUR FIREBASE CONFIG HERE
+// 🔥 FIREBASE CONFIG
+// PASTE YOUR FIREBASE CONFIG HERE
     const firebaseConfig = {
 
       apiKey: "AIzaSyD18HpPGJ-bIQdRafoIwA6QdKIYl6fCu4w",
@@ -47,23 +106,29 @@
       appId: "1:468609632933:web:8418c2e7228b9433c49b4c"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    // SEND DATA TO FIREBASE
-    window.setDevice = function(device, state) {
-      set(ref(db, device), state);
-    }
+// BUTTON CONTROL
+window.setDevice = function(device, state) {
+  set(ref(db, device), state);
+};
 
-    // LIVE STATUS (for one device example)
-    const lightRef = ref(db, "living-light");
+// LIVE STATUS FUNCTION
+function liveStatus(path, elementId)
+{
+  onValue(ref(db, path), (snapshot) =>
+  {
+    document.getElementById(elementId).innerText =
+      snapshot.val();
+  });
+}
 
-    onValue(lightRef, (snapshot) => {
-      document.getElementById("status").innerText =
-        "Light Status: " + snapshot.val();
-    });
+// LIVE UPDATES
+liveStatus("living-light", "lightStatus");
+liveStatus("living-fan", "fanStatus");
 
-  </script>
+</script>
 
 </body>
 </html>
