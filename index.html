@@ -1,23 +1,75 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>ESP32 LED Control</title>
 </head>
+
 <body style="text-align:center; font-family:sans-serif;">
 
   <h1>ESP32 LED Control 🌐</h1>
 
-  <button onclick="turnOn()" style="padding:10px 20px;">Turn ON</button>
-  <button onclick="turnOff()" style="padding:10px 20px;">Turn OFF</button>
+  <button onclick="turnOn()" style="padding:10px 20px;">
+    Turn ON
+  </button>
 
-  <script>
-    function turnOn() {
-      fetch("https://your-server-url/api/led/on");
+  <button onclick="turnOff()" style="padding:10px 20px;">
+    Turn OFF
+  </button>
+
+  <script type="module">
+
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getDatabase,
+      ref,
+      set
+    }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+    // PASTE YOUR FIREBASE CONFIG HERE
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyD18HpPGJ-bIQdRafoIwA6QdKIYl6fCu4w",
+
+      authDomain: "esp32homecontrol-5bfec.firebaseapp.com",
+
+      databaseURL: "https://esp32homecontrol-5bfec-default-rtdb.firebaseio.com",
+
+      projectId: "esp32homecontrol-5bfec",
+
+      storageBucket: "esp32homecontrol-5bfec.firebasestorage.app",
+
+      messagingSenderId: "468609632933",
+
+      appId: "1:468609632933:web:8418c2e7228b9433c49b4c"
+    };
+
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+
+
+    // ON BUTTON
+    window.turnOn = function ()
+    {
+      set(ref(db, 'bulb'), 'ON');
+      alert("Bulb ON");
     }
 
-    function turnOff() {
-      fetch("https://your-server-url/api/led/off");
+
+    // OFF BUTTON
+    window.turnOff = function ()
+    {
+      set(ref(db, 'bulb'), 'OFF');
+      alert("Bulb OFF");
     }
+
   </script>
 
 </body>
