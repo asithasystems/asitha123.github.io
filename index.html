@@ -1,83 +1,59 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>ESP32 LED Control</title>
+  <title>Smart Home Control</title>
 </head>
 
-<body style="text-align:center; font-family:sans-serif;">
+<body style="text-align:center;font-family:sans-serif;">
 
-  <h1>ESP32 LED Control 🌐</h1>
+  <h1>Smart Home Dashboard</h1>
 
-  <button onclick="turnOn()" style="padding:10px 20px;">
-    Turn ON
-  </button>
+  <h3 id="status">Loading...</h3>
 
-  <button onclick="turnOff()" style="padding:10px 20px;">
-    Turn OFF
-  </button>
-<h2 id="status">Bulb Status: OFF</h2>
+  <button onclick="setDevice('living-light','ON')">Light ON</button>
+  <button onclick="setDevice('living-light','OFF')">Light OFF</button>
+
+  <br><br>
+
+  <button onclick="setDevice('living-fan','ON')">Fan ON</button>
+  <button onclick="setDevice('living-fan','OFF')">Fan OFF</button>
+
   <script type="module">
 
-    import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-  getDatabase,
-  ref,
-  set,
-  onValue
-}
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      getDatabase,
+      ref,
+      set,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-
-    // PASTE YOUR FIREBASE CONFIG HERE
+    // 🔥 FIREBASE CONFIG (PUT YOUR VALUES)
     const firebaseConfig = {
-
-      apiKey: "AIzaSyD18HpPGJ-bIQdRafoIwA6QdKIYl6fCu4w",
-
-      authDomain: "esp32homecontrol-5bfec.firebaseapp.com",
-
-      databaseURL: "https://esp32homecontrol-5bfec-default-rtdb.firebaseio.com",
-
-      projectId: "esp32homecontrol-5bfec",
-
-      storageBucket: "esp32homecontrol-5bfec.firebasestorage.app",
-
-      messagingSenderId: "468609632933",
-
-      appId: "1:468609632933:web:8418c2e7228b9433c49b4c"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
-
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-
     const db = getDatabase(app);
-  const bulbRef = ref(db, 'bulb');
 
-onValue(bulbRef, (snapshot) =>
-{
-    const data = snapshot.val();
-
-    document.getElementById("status").innerHTML =
-        "Bulb Status: " + data;
-});
-
-    // ON BUTTON
-    window.turnOn = function ()
-    {
-      set(ref(db, 'bulb'), 'ON');
-      alert("Bulb ON");
+    // SEND DATA TO FIREBASE
+    window.setDevice = function(device, state) {
+      set(ref(db, device), state);
     }
 
+    // LIVE STATUS (for one device example)
+    const lightRef = ref(db, "living-light");
 
-    // OFF BUTTON
-    window.turnOff = function ()
-    {
-      set(ref(db, 'bulb'), 'OFF');
-      alert("Bulb OFF");
-    }
+    onValue(lightRef, (snapshot) => {
+      document.getElementById("status").innerText =
+        "Light Status: " + snapshot.val();
+    });
 
   </script>
 
